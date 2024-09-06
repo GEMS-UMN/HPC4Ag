@@ -6,8 +6,8 @@ from datetime import datetime
 import seaborn as sns
 from datetime import datetime
 
-from src.preprocessing import get_analysis_array
-from .utils import load_pickle
+from .preprocessing import get_analysis_array
+from .utils import download_file, load_pickle
 
 crop_colors = ["#FFD400", "#267000", "#A800E3", "#D9B56B"]
 crop_types = ["Corn", "Soybeans", "Sugarbeets", "Spring Wheat"]
@@ -105,10 +105,11 @@ def plot_indices_temporal(selected_fields, filepath):
     fig, axs = plt.subplots(2, 1, figsize=(12, 5), tight_layout=True)
 
     for crop, fid in selected_fields.items():
-        grid = load_pickle(filepath=filepath.format(fid))["samples"][0]["grids"][0]
+        pickle_path=download_file(bucket_path='csb/', filename=filepath.format(fid))
+        grid = load_pickle(filepath=pickle_path)["samples"][0]["grids"][0]
         dates = [datetime.strptime(dateString, "%Y-%m-%d").date() for dateString in grid['dates']]
         # get indices
-        stack = get_analysis_array(filepath=filepath.format(fid))
+        stack = get_analysis_array(filepath=pickle_path)
         stack[stack==NoDataValue]=np.nan
         ndvi = stack[:, 0, :, :]
         ndvi_med = [np.nanmedian(ndvi[timestep]) for timestep in range(0, ndvi.shape[0])]

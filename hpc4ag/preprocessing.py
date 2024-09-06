@@ -2,7 +2,7 @@ import pickle
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-from .utils import load_pickle, save_pickle
+from .utils import download_file, load_pickle, save_pickle
 
 NoDataValue = -9999
 
@@ -130,7 +130,8 @@ def create_patches(fids, filepath, outfilepath, x_dim=3, y_dim=3,
     file_dict = {}
     for fid in fids:
         analysis_array = get_analysis_array(
-            filepath.format(fid), start_end_dates=start_end_dates)
+            filepath=download_file(bucket_path='csb/', filename=filepath.format(fid)), 
+            start_end_dates=start_end_dates)
         patches = divide_image(analysis_array, x_dim, y_dim)
         file_dict[fid] = patches
     save_pickle(file_dict, outfilepath)

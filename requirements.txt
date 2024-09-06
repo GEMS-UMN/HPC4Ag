@@ -1,0 +1,14 @@
+jupyterlab
+ipykernel
+pandas
+tensorflow
+matplotlib
+scikit-learn
+rasterio
+shapely
+geopandas
+seaborn
+calplot
+# SNP additions
+pyslurm
+multiprocessing
