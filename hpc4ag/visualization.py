@@ -11,6 +11,7 @@ from .utils import download_file, load_pickle
 
 crop_colors = ["#FFD400", "#267000", "#A800E3", "#D9B56B"]
 crop_types = ["Corn", "Soybeans", "Sugarbeets", "Spring Wheat"]
+crop_colors_dict = dict(zip(crop_types, crop_colors))
 NoDataValue = -9999
 
 def map_training_labels(gdf, column_name):
@@ -24,8 +25,10 @@ def map_training_labels(gdf, column_name):
     Returns:
         None
     """
-    cmap = ListedColormap([
-        crop_colors[crop_types.index(crop)] for crop in sorted(crop_types)])
+    #print (crop_types)
+    crop_types = sorted(list(gdf[column_name].unique()))
+    #cmap = ListedColormap([crop_colors[crop_types.index(crop)] for crop in crop_types])
+    cmap = ListedColormap([crop_colors_dict[crop] for crop in crop_types])
     fig, ax = plt.subplots(figsize=(8,4), tight_layout=True)
     gdf.plot(column=column_name, legend=True, cmap=cmap, legend_kwds={"bbox_to_anchor":(1.4, 1)}, ax=ax)
     plt.title("Data labels and boundaries", weight="bold")
@@ -45,13 +48,11 @@ def plot_sample_distribution (gdf, column_name):
     """
     category_counts = gdf[column_name].value_counts()
     
-    category_colors = dict(zip(crop_types, crop_colors))
-    
     # Plotting the histogram with custom colors
     plt.figure(figsize=(6, 2.5), tight_layout=True)
     bars =  category_counts.plot(
         kind="bar",
-        color=[category_colors.get(cat, "grey") for cat in category_counts.index])
+        color=[crop_colors_dict.get(cat, "grey") for cat in category_counts.index])
     plt.title("Data distribution", weight="bold")
     plt.xlabel("Crop Type")
     plt.xticks(rotation=0)
@@ -99,8 +100,6 @@ def plot_indices_temporal(selected_fields, filepath):
     Returns:
         None
     """
-    
-    crop_colors_dict = dict(zip(crop_types, crop_colors))
     
     fig, axs = plt.subplots(2, 1, figsize=(12, 5), tight_layout=True)
 
