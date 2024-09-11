@@ -10,5 +10,6 @@ geopandas
 seaborn
 calplot
 # SNP additions
-pyslurm
-multiprocessing
+cython
+simple_slurm
+waiting
