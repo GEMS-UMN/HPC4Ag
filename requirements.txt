@@ -1,3 +1,5 @@
+uv
+pip
 jupyterlab
 ipykernel
 pandas
