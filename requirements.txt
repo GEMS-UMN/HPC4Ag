@@ -15,3 +15,5 @@ calplot
 cython
 simple_slurm
 waiting
+# Kmers additions
+line_profiler
