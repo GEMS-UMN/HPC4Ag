@@ -6,5 +6,6 @@ uv python install 3.12
 uv venv --python=3.12 $BASE_DIR/venv
 source $BASE_DIR/venv/bin/activate
 uv pip install --link-mode=copy -r requirements.txt
+uv pip install --link-mode=copy ./
 chmod -R g+rx $BASE_DIR/uv
 chmod -R g+rx $BASE_DIR/venv
