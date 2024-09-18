@@ -2,11 +2,11 @@ import pickle
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-from .utils import load_pickle, save_pickle
+from .utils import download_file, load_pickle, save_pickle
 
 NoDataValue = -9999
 
-def split_train_test(object_ids, test_size=0.2):
+def split_train_test(objects, test_size=0.2):
     """
     Split the given object IDs into train and test sets.
 
@@ -17,7 +17,7 @@ def split_train_test(object_ids, test_size=0.2):
     Returns:
         list of int, list of int: Lists of the IDs of objects for the train and test set.
     """    
-    train_ids, test_ids = train_test_split(object_ids, test_size=test_size, random_state=42)
+    train_ids, test_ids = train_test_split(objects, test_size=test_size, random_state=42)
     return train_ids, test_ids
 
 def band_idx_lookup(band_name, data):
@@ -74,43 +74,41 @@ def get_analysis_array(filepath, start_end_dates=None):
     analysis_array[:, :, mask == 0] = NoDataValue
     return analysis_array
 
-def divide_image(array, x_dim=3, y_dim=3):
+def divide_image(array, patch_height=3, patch_width=3, allow_overlap=False):
     """
     Divides larger array into smaller patches.
-
+    
     Parameters:
         array (array): The input array.
-        x_dim (int, optional): X dimension of resulting patches. Defaults to 3.
-        y_dim (int, optional): Y dimension of resulting patches. Defaults to 3.
-
+        patch_height (int, optional): height dimension in pixels of a resulting patch. Defaults to 3.
+        patch_width (int, optional): width dimension in pixels of a resulting patch. Defaults to 3.
+        allow_overlap (bool, optional): create overrlapping patches. Defaults to False (no overlap).
+        
     Returns:
         array: array of resulting patches
     """
     array = array.copy()
     # Get dimensions of the input array
     num_date, channels, height, width = array.shape
-    # Define patch dimensions
-    patch_height, patch_width = x_dim, y_dim
     # Initialize lists to store patches and their positions
     patches = []
-    patch_positions = []
     i = 0
     while i <= height - patch_height:
         j = 0
         while j <= width - patch_width:
             # Initialize patch before extraction
             patch = array[:, :, i:i+patch_height, j:j+patch_width]
-            # Check if all elements in the patch are non-zero (not equal to 0)
+            # Check if all elements in the patch are valid (not equal to NoDataValue)
             if np.all(patch != NoDataValue):
                 patches.append(patch.copy())
-                patch_positions.append((i, j))
-                array[:, :, i:i+patch_height, j:j+patch_width] = NoDataValue  # Mark these positions as used
-            j += patch_width if np.all(patch != NoDataValue) else 1
-        i += patch_height if np.all(patch != NoDataValue) else 1
-    # Convert the list to numpy arrays before returning
+            j += patch_width if allow_overlap==False else 1
+        i += patch_height if allow_overlap==False else 1
+    # Convert the list to numpy array before returning
     return np.array(patches)
 
-def create_patches(fids, filepath, outfilepath, x_dim=3, y_dim=3,
+def create_patches(fids, filepath, outfilepath, 
+                   patch_height=3, patch_width=3,
+                   allow_overlap=False,
                    start_end_dates=["2022-05-11", "2022-10-09"]):
     """
     Combines preparatory steps to generate patches (computes vegetation indices, 
@@ -122,6 +120,7 @@ def create_patches(fids, filepath, outfilepath, x_dim=3, y_dim=3,
         outfilepath (str): The path to the file where the object will be saved.
         x_dim (int, optional): X dimension of resulting patches. Defaults to 3.
         y_dim (int, optional). Y dimension of resulting patches. Defaults to 3.
+        allow_overlap (bool, optional): create overrlapping patches. Defaults to False (no overlap).
         start_end_dates (list of str, optional): List containing start and end dates for analysis. Defaults to ["2022-05-11", "2022-10-09"].
 
     Returns:
@@ -130,7 +129,8 @@ def create_patches(fids, filepath, outfilepath, x_dim=3, y_dim=3,
     file_dict = {}
     for fid in fids:
         analysis_array = get_analysis_array(
-            filepath.format(fid), start_end_dates=start_end_dates)
-        patches = divide_image(analysis_array, x_dim, y_dim)
+            filepath=download_file(bucket_path='csb/', filename=filepath.format(fid)), 
+            start_end_dates=start_end_dates)
+        patches = divide_image(analysis_array, patch_height, patch_width, allow_overlap)
         file_dict[fid] = patches
     save_pickle(file_dict, outfilepath)

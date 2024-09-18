@@ -85,7 +85,7 @@ def apply_scaler_test(X_test, scalers):
     X_test_scaled = np.stack(scaled_feature_arrays, axis=2)
     return X_test_scaled
 
-def compile_model(shape=(31, 2, 3, 3), kind="SimpleRNN"):
+def compile_model(shape=(31, 2, 3, 3), kind="SimpleRNN", n_classes=4):
     """
     Defines and compiles a neural network model.
 
@@ -100,7 +100,7 @@ def compile_model(shape=(31, 2, 3, 3), kind="SimpleRNN"):
     model = Sequential()
     model.add(Reshape((shape[0], shape[1]*shape[2]*shape[3]), input_shape=shape))
     if kind == "SimpleRNN":
-        model.add(SimpleRNN(units=4, activation="softmax"))  
+        model.add(SimpleRNN(units=n_classes, activation="softmax"))  
     elif kind == "LSTM":
         model.add(LSTM(units=64, kernel_regularizer=regularizers.l2(0.01)))
         model.add(Dense(128, activation="relu", kernel_regularizer=regularizers.l2(0.01)))

@@ -1,0 +1,19 @@
+uv
+pip
+jupyterlab
+ipykernel
+pandas
+tensorflow
+matplotlib
+scikit-learn
+rasterio
+shapely
+geopandas
+seaborn
+calplot
+# SNP additions
+cython
+simple_slurm
+waiting
+# Kmers additions
+line_profiler
