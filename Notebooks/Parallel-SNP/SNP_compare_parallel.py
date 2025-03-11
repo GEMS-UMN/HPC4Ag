@@ -12,13 +12,15 @@ import os
 
 outprefix = sys.argv[1]
 data = sys.argv[2]
+num_partitions = sys.argv[3]
+num_processors = sys.argv[4]
 df = pd.read_csv(data, index_col=0)
 
 # Generate all unique combinations of columns and store as a list in pair
 pair = [[i, j] for i in range(len(df.columns)-1) for j in range(i+1, len(df.columns))]
     
 # Split the list subarrays
-pair_split = np.array_split(pair, 10)
+pair_split = np.array_split(pair, num_partitions)
     
 # Define the function that compares elements of the two columns and calculates percentage difference in the columns
 # Fix the dataframe argument to take in the df of interest and let combination remain a variable to iterate over
@@ -36,7 +38,7 @@ def Perc_diff(combn, df = df):
 
 def SNP_parallel(x):
     #Using multiprocessing for parallel computation, instantiate pool and assign the total number of cores available using mp.cpu_count()
-    pool = mp.Pool(mp.cpu_count())
+    pool = mp.Pool(num_processors)
     # Apply the funtion over one subarray of pair_split at a time usine pool.map as follows
     results = pool.map(Perc_diff, [combn for combn in pair_split[x]])
     # Do not forget to close the pool
@@ -44,7 +46,7 @@ def SNP_parallel(x):
     
     return results
    
-x = int(sys.argv[3])
+x = int(sys.argv[5])
 print("x is ", x)
 results = SNP_parallel(x)
 # Convert the results list into a dataframe
