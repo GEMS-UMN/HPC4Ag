@@ -12,4 +12,5 @@ slurmd -C | grep -v UpTime >> /etc/slurm/slurm.conf
 tail -n 1 /etc/hosts >> /opt/hpc4ag/etc/hosts
 create-munge-key
 cp /etc/munge/munge.key /opt/hpc4ag/
+useradd -u 5555 jupyter
 exit
