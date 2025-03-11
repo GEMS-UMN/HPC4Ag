@@ -55,17 +55,17 @@ jupyter server password
 exit
 
 # Instance webshell, build slurmdctld
-docker run -ti --privileged --name slurm_ctld -v /home/jupyter:/home/jupyter -v /opt/hpc4ag:/opt/hpc4ag -v /opt/hpc4ag/etc/slurm:/etc/slurm --cpus 2 -p8888:8888 rockylinux:9 /bin/bash
-/opt/hpc4ag/github_repo/build_slurmctld.sh
+docker run -ti --privileged --name slurm_ctld -v /home/jupyter:/home/jupyter -v /opt/hpc4ag:/opt/hpc4ag -v /opt/hpc4ag/etc/slurm:/etc/slurm --cpus 8 -p8888:8888 rockylinux:9 /bin/bash
+/bin/bash /opt/hpc4ag/github_repo/build_slurmctld.sh
 exit
+docker start slurm_ctld
 
 # build slurmd
-docker run -ti --privileged --name slurm_worker1 -v /home/jupyter:/home/jupyter -v /opt/hpc4ag:/opt/hpc4ag -v /opt/hpc4ag/etc/slurm:/etc/slurm --cpus 2  rockylinux:9 /bin/bash 
-/opt/hpc4ag/github_repo/build_slurmd.sh
+docker run -ti --privileged --name slurm_worker1 -v /home/jupyter:/home/jupyter -v /opt/hpc4ag:/opt/hpc4ag -v /opt/hpc4ag/etc/slurm:/etc/slurm --cpus 8  rockylinux:9 /bin/bash
+/bin/bash /opt/hpc4ag/github_repo/build_slurmd.sh
 exit
+docker start slurm_worker1
 
 # Manipulate /opt/hpc4ag
-docker start slurm_ctld
-docker start slurm_worker1
-docker exec slurm_ctld /opt/hpc4ag/github_repo/start_slurmctld.sh
-docker exec slurm_worker1 /opt/hpc4ag/github_repo/start_slurmd.sh
+docker exec -d slurm_ctld /bin/bash /opt/hpc4ag/github_repo/start_slurmctld.sh
+docker exec -d slurm_worker1 /bin/bash /opt/hpc4ag/github_repo/start_slurmd.sh

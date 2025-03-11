@@ -10,5 +10,6 @@ dnf upgrade -y --refresh
 dnf install -y slurm slurm-slurmd vim sudo git zip which nano procps-ng ncurses openssh-clients wget
 slurmd -C | grep -v UpTime >> /etc/slurm/slurm.conf
 tail -n 1 /etc/hosts >> /opt/hpc4ag/etc/hosts
+cp /etc/munge/munge.key /opt/hpc4ag/
 useradd -u 5555 jupyter 
 exit
