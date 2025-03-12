@@ -12,8 +12,8 @@ import os
 
 outprefix = sys.argv[1]
 data = sys.argv[2]
-num_partitions = sys.argv[3]
-num_processors = sys.argv[4]
+num_partitions = int(sys.argv[3])
+num_processors = int(sys.argv[4])
 df = pd.read_csv(data, index_col=0)
 
 # Generate all unique combinations of columns and store as a list in pair
