@@ -35,33 +35,17 @@ git checkout dockerize
 /bin/bash ./build_venv.sh
 source /opt/hpc4ag/venv/bin/activate
 jupyter server password
-exitsudo /bin/bash
-useradd -u 5555 jupyter
-mkdir -p /opt/hpc4ag/etc
-chown jupyter /opt/hpc4ag
-chgrp jupyter /opt/hpc4ag
-sudo -u jupyter bash
-cd /opt/hpc4ag
-wget https://s3.msi.umn.edu/hpc4ag/hpc4ag_data.tar.gz
-tar -zxf hpc4ag_data.tar.gz
-git clone https://github.com/GEMS-UMN/HPC4Ag.git /opt/hpc4ag/github_repo
-cd /opt/hpc4ag/github_repo
-git checkout dockerize
-/bin/bash ./build_venv.sh
-source /opt/hpc4ag/venv/bin/activate
-jupyter server password
-
 
 exit
 
 # Instance webshell, build slurmdctld
-docker run -ti --privileged --name slurm_ctld -v /home/jupyter:/home/jupyter -v /opt/hpc4ag:/opt/hpc4ag -v /opt/hpc4ag/etc/slurm:/etc/slurm --cpus 8 -p8888:8888 rockylinux:9 /bin/bash
+docker run -ti --privileged --name slurm_ctld -v /home/jupyter:/home/jupyter -v /opt/hpc4ag:/opt/hpc4ag -v /opt/hpc4ag/etc/slurm:/etc/slurm --cpus 2 -p8888:8888 rockylinux:9 /bin/bash
 /bin/bash /opt/hpc4ag/github_repo/build_slurmctld.sh
 exit
 docker start slurm_ctld
 
 # build slurmd
-docker run -ti --privileged --name slurm_worker1 -v /home/jupyter:/home/jupyter -v /opt/hpc4ag:/opt/hpc4ag -v /opt/hpc4ag/etc/slurm:/etc/slurm --cpus 8  rockylinux:9 /bin/bash
+docker run -ti --privileged --name slurm_worker1 -v /home/jupyter:/home/jupyter -v /opt/hpc4ag:/opt/hpc4ag -v /opt/hpc4ag/etc/slurm:/etc/slurm --cpus 2  rockylinux:9 /bin/bash
 /bin/bash /opt/hpc4ag/github_repo/build_slurmd.sh
 exit
 docker start slurm_worker1
