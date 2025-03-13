@@ -4,7 +4,9 @@ jupyterlab
 ipykernel
 pandas
 tensorflow
+folium
 matplotlib
+mapclassify
 scikit-learn
 rasterio
 shapely
