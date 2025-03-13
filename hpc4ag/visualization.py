@@ -153,7 +153,7 @@ def plot_confusion_matrix(y_true, y_pred, display_labels):
     plt.show()
 
 def plot_learning_history(history):
-     """
+    """
     Plots the training and validation accuracy and loss at each epoch.
 
     Parameters:
