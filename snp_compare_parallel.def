@@ -1,0 +1,17 @@
+Bootstrap: docker
+From: python:3.12-alpine
+Stage: build
+
+%post
+    apk update
+    apk add git
+    apk add fakeroot
+    FAKEROOTDONTTRYCHOWN=1 fakeroot sh -c '
+        apk add squid
+    '
+    git clone https://github.com/GEMS-UMN/HPC4Ag.git /opt/HPC4Ag
+    pip install numpy==1.26.4
+    pip install pandas==2.2.2
+
+%runscript
+    python /opt/HPC4Ag/Notebooks/Parallel-SNP/SNP_compare_parallel.py $@
