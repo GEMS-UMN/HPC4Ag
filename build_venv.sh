@@ -1,4 +1,4 @@
-export BASE_DIR=/home/gems_learning/shared/hpc4ag
+export BASE_DIR=/opt/hpc4ag
 curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR="$BASE_DIR/uv" sh
 source $BASE_DIR/uv/env
 export UV_PYTHON_INSTALL_DIR=$BASE_DIR/uv/python_installs/

@@ -151,3 +151,34 @@ def plot_confusion_matrix(y_true, y_pred, display_labels):
         plt.setp(axs[ax].get_xticklabels(), rotation=45, ha="right",
              rotation_mode="anchor")
     plt.show()
+
+def plot_learning_history(history):
+    """
+    Plots the training and validation accuracy and loss at each epoch.
+
+    Parameters:
+        history: Model fitting history after training.
+
+    Returns:
+        None
+    """
+    #plot the training and validation IoU and loss at each epoch
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
+    epochs = range(1, len(loss) + 1)
+    acc = history.history['accuracy']
+    val_acc = history.history['val_accuracy']
+    fig, axs = plt.subplots(1, 2, figsize=(10,3), tight_layout=True)
+    axs[0].plot(epochs, loss, label='Training loss')
+    axs[0].plot(epochs, val_loss, label='Validation loss')
+    axs[0].set_title('Training and validation loss', weight="bold")
+    axs[0].set_xlabel('Epochs')
+    axs[0].set_ylabel('Loss')
+    axs[0].legend()
+    axs[1].plot(epochs, acc, label='Training accuracy')
+    axs[1].plot(epochs, val_acc, label='Validation accuracy')
+    axs[1].set_title('Training and validation accuracy', weight="bold")
+    axs[1].set_xlabel('Epochs')
+    axs[1].set_ylabel('Accuracy')
+    axs[1].legend()
+    plt.show()

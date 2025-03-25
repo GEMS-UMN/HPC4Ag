@@ -7,7 +7,7 @@ tmpdir = tempfile.mkdtemp()
 
 def download_file(bucket_url="https://s3.msi.umn.edu/hpc4ag", bucket_path="", filename=""):
     fileurl = '/'.join([bucket_url.strip('/'), bucket_path.strip('/'), filename.strip('/')])
-    gemslearningfile = os.path.join('/home/gems_learning/shared/hpc4ag/', filename)
+    gemslearningfile = os.path.join('/opt/hpc4ag/data', filename)
     if (os.path.isfile(gemslearningfile)):
         # We've already made this available in the shared area
         return gemslearningfile
